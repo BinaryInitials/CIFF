@@ -5,36 +5,58 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Run2 {
 
-	public static final String PATH = "/Users/oizad/CIFF/";
-	public static final String FESTIVAL = ".*(toronto|cannes|venice|berlin inter|tribeca|sundance|raindance).*festival.*";
-	public static final String AWARD = "((([A-Z]+)|([A-Z][a-z]+) ?)+(Emmy|Award|Prize|dOr|(Golden|Silver) (Pram|Globe|Lion|Bear)))";
-
+	public static final String URL_LIKE_TEMPLATE = "https://www.facebook.com/plugins/like.php?app_id=278343225630630&href=https%3A%2F%2Fwww.clevelandfilm.org%2Ffilms%2F" + Run1.YEAR + "%2F";
+	
+	public static int getMovieLikes(String stub){
+		int likes = 0;
+		try{
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(new URL(URL_LIKE_TEMPLATE + stub).openStream()));
+			String nextline;
+			while((nextline=buffer.readLine()) != null){
+				if(nextline.contains(">Like<")){
+					if(nextline.contains("You and ")){
+						likes = Integer.valueOf(nextline.replaceAll(".*You and ([0-9]+) others like this.*","$1"));
+					}else if(nextline.contains("people like this")){
+						likes = Integer.valueOf(nextline.replaceAll(".*>([0-9]+) people like this.*","$1"));
+					}
+					break;
+				}
+			}
+			buffer.close();
+		}catch(Exception e){}
+		return likes;
+	}
+	
 	public static void main(String[] args) throws IOException {
-		File file = new File(PATH);
-		HashMap<String, String> likeMap = Likes.getLikeMap();
+		File file = new File(System.getProperty("user.dir"));
 		List<Movie> movies = new ArrayList<Movie>();
+		System.out.println("1. Parsing data...");
+		int count=0;
+		int diff = file.listFiles().length / 20;
 		for(File fileInFolder : file.listFiles()){
 			if(fileInFolder.toString().endsWith("_stub.txt")){
+				if(count++ % diff == 0)
+					System.out.println("Processed: " + String.format("%.1f", (100*count)/(0.0+file.listFiles().length)) + "%");
+				
 				Movie movie = extractMovieFromSource(fileInFolder);
 				String stub = movie.getUrl().replaceAll(".*/", "");
-				if(movie != null && likeMap.get(stub) != null){
-					movie.setLikes(Integer.valueOf(likeMap.get(stub)));
+				if(movie != null){
+					movie.setLikes(Integer.valueOf(getMovieLikes(stub)));
 					movies.add(movie);
 				}
 			}
 		}
 		Collections.sort(movies, MovieComparator);
-		ObjectMapper om = new ObjectMapper();
+//		ObjectMapper om = new ObjectMapper();
 		List<Movie> shorts = new ArrayList<Movie>();
 		List<Movie> films = new ArrayList<Movie>();
 		List<Movie> perspectives = new ArrayList<Movie>();
@@ -54,67 +76,40 @@ public class Run2 {
 				}
 			}
 		}
-		om.writeValue(new File("CIFF42_Films.json"), films);
-		om.writeValue(new File("CIFF42_Shorts.json"), shorts);
 		int rank = 1;
-		for(Movie movie : shorts){
-			List<String> prestigiousAwards = getPrestigiousAwards(movie);
-			boolean isPrestigiousAwards = prestigiousAwards.size() > 0;
+		List<String> rows = new ArrayList<String>();
+		rows.addAll(ConvertToHtml.startHTML());
+		System.out.println("2. Creating website...");
+		for(Movie movie : films){
+//			List<String> prestigiousAwards = getPrestigiousAwards(movie);
+//			boolean isPrestigiousAwards = prestigiousAwards.size() > 0;
 			String schedule = "";
-			String shortPrograms = "";
 			if(movie.getLocations() != null && movie.getSchedule() != null){
 				for(String event : movie.getSchedule()){
 					schedule += "<br>" + event;
 				}
-				for(String shortProgram : movie.getShortPrograms()){
-					shortPrograms += "<br>" + shortProgram;
-				}
 				if(movie.getLocations() != null && movie.getSchedule() != null){
-					System.out.println(
+					String stub = movie.getUrl().replaceAll(".*/",""); 
+					rows.add(
 							"<a href=\"" + movie.getUrl() + "\"  title=\"" + movie.getTitle() + "\" class=\"film\" target=\"_blank\">" + 
-							"<img src=\"" + movie.getImageUrl() + "\"  alt=\"\" height=\"267\" width=\"400\">" + 
+							"<img src=\"images/" + stub + "\"  alt=\"\" height=\"300\" width=\"450\">" + 
 							"<div class=\"details\" id=\"details\">" +
-							"<p class=\"title\" id=\"title\" style=\"font-size:14px\"><font color=\"#007777\">" + rank++ + ". " + movie.getTitle().toUpperCase().trim() + "</font></p>" + 
-							"<p class=\"lucy-wrapper\" id=\"location\" style=\"font-size:10px\"><strong><font color=\"#03B1CF\">" + movie.getLocations().toString().replaceAll("[\\[|\\]]","") + "</font></strong>" +
+							"<p class=\"title\" id=\"title\" ><font color=\"#007777\">" + rank++ + ". " + movie.getTitle().toUpperCase().trim() + "</font></p>" + 
+							"<p class=\"lucy-wrapper\" style=\"font-family:arial;\" id=\"location\"><strong><font color=\"#03B1CF\">" + movie.getLocations().toString().replaceAll("[\\[|\\]]","") + "</font></strong>" +
 							schedule +  
-							shortPrograms +  
 							"<br>Popularity: " + movie.getLikes() + 
 							"<br>Duration: " + movie.getLength() + "'" + 
 							(movie.isPremier()? "<br>Premiere: " + movie.getPremierDescription():"") + 
-							(isPrestigiousAwards ? "<br>Awards: " + prestigiousAwards.toString().replaceAll("[\\[|\\]]","") : "") + 
-							"<br>Description: " + movie.getDescription().replaceAll("([a-z][a-z])\\. .*","$1...") +
+//							(isPrestigiousAwards ? "<br>Awards: " + prestigiousAwards.toString().replaceAll("[\\[|\\]]","") : "") + 
+//							"<br>Description: " + movie.getDescription().replaceAll("([a-z][a-z])\\. .*","$1...") +
+							"<br>Description: " + movie.getDescription() +
+							"<br>Director: " + movie.getBiography() + 
 							"</p></div></a>");
 				}
 			}
 		}
-	}
-	
-	public static List<String> getPrestigiousAwards(String text) {
-		List<String> awards = new ArrayList<String>();
-		String processedText = text.replaceAll("&[a-z]+;","").replaceAll("[+|\\(|\\)]", "").replaceAll("[Aa]ward[^A-Za-z]+[Ww]inning", "").replaceAll(" +", " ");
-		int numOfAwards = processedText.split(AWARD).length-1;
-		
-		if(numOfAwards == 0)
-			return awards;
-		
-		for(int i=0;i<numOfAwards;i++){
-			String award = processedText.replaceAll(".*(,|[^A-Za-z][a-z]+) " + AWARD + ".*", "$2");
-			awards.add(award);
-			String primer = processedText.replaceAll(".*((,|([^A-Za-z][a-z]+){1}) " + award + ").*", "$1");
-			processedText = processedText.replaceAll(primer + ".*","");
-		}
-		
-		return awards;
-	}
-	public static List<String> getPrestigiousAwards(Movie movie) {
-		List<String> awards = new ArrayList<String>();
-		if(movie.getTitle() == null || movie.getBiography() == null)
-			return awards;
-		return getPrestigiousAwards(movie.getDescription() + " " + movie.getBiography());
-	}
-
-	public static boolean isPrestigiousFestival(Movie movie){
-		return movie.getTitle().matches(FESTIVAL) || movie.getBiography().matches(FESTIVAL);
+		rows.addAll(ConvertToHtml.endHTML());
+		ConvertToHtml.writeToFile("index.html", rows);
 	}
 	
 	public static Movie extractMovieFromSource(File source){

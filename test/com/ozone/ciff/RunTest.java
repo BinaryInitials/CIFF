@@ -29,11 +29,5 @@ public class RunTest {
 		Movie movie = Run.getMovieFromUrl(url);
 		System.out.println(movie);
 	}
-	
-	@Test
-	public void testLikes(){
-		String stub = "44-pages";
-		Assert.assertTrue(Run.getMovieLikes(stub) > 0);
-	}
 
 }

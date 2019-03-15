@@ -24,11 +24,16 @@ public class Run {
 		Date tic = new Date();
 		List<String> stubs = getUrlStubs(urlFestivalGuide);
 		System.out.println("# Stubs:\t" + stubs.size());
+		
 		HashMap<Type, List<Movie>> movies = new HashMap<Type, List<Movie>>();
 		movies.put(Type.SHORT, new ArrayList<Movie>());
 		movies.put(Type.FILM, new ArrayList<Movie>());
 
+		int delta = stubs.size()/20;
+		int s=0;
 		for(String stub : stubs){
+			if((s++)%delta == 0) 
+				System.out.println(String.format("%.2f",(100*s)/(0.0+stubs.size())) + "% processed");
 			Movie movie = getMovieFromUrl(URL_TEMPLATE + "films/" + YEAR + "/"  +  stub);
 			if(movie.getType() != null && movie.getSchedule() != null){
 				movie.setLikes(getMovieLikes(stub));
@@ -42,24 +47,24 @@ public class Run {
 		Collections.sort(shortList, MovieComparator);
 		Collections.sort(filmList, MovieComparator);
 		
-		FileWriter shorts = new FileWriter("CIFF_SHORTS.txt");
+		FileWriter shorts = new FileWriter("CIFF_SHORTS" + (YEAR-1976) + ".txt");
 		
 		System.out.println("TOP " + TOP_LIMIT + " SHORTS:");
-		int rank = 0;
+		int rankS = 0;
 		for(Movie movie : movies.get(Type.SHORT)){
-			if(rank < TOP_LIMIT)	System.out.println(++rank + "\t" + movie);
+			if(rankS < TOP_LIMIT)	System.out.println(++rankS + "\t" + movie);
 			shorts.write(movie + "\n");
 		}
 
 		shorts.close();
 		
 		
-		FileWriter films = new FileWriter("CIFF_FILMS.txt");
+		FileWriter films = new FileWriter("CIFF_FILMS" + (YEAR-1976) + ".txt");
 		
 		System.out.println("TOP " + TOP_LIMIT + " FILMS:");
-		rank = 0;
+		int rankM = 0;
 		for(Movie movie : movies.get(Type.FILM)){
-			if(rank < TOP_LIMIT) System.out.println(++rank + "\t" + movie);
+			if(rankM < TOP_LIMIT) System.out.println(++rankM + "\t" + movie);
 			films.write(movie + "\n");
 		}
 		
@@ -101,7 +106,7 @@ public class Run {
 			while((inputLine=buffer.readLine()) != null){
 				if(inputLine.contains("<title>")){
 					movie.setTitle(inputLine.replaceAll(".*<title>(.*) - Cleveland International Film Festival.*", "$1"));
-				}else if(inputLine.contains("<h3>CIFF41 Screenings</h3>")){
+				}else if(inputLine.contains("<h3>CIFF" + (YEAR-1976) + " Screenings</h3>")){
 					String[] parts = inputLine.split("<strong>");
 					for(String part : parts){
 						if(part.startsWith("Tower City Cinemas")){
@@ -178,6 +183,13 @@ public class Run {
 	    @Override
 	    public int compare(Movie left, Movie right) {
 	      
+	      if(left == null && right == null) {
+	    	  return 0;
+	      }else if(left == null && right != null) {
+	    	  return Integer.compare(0,1);
+	      }else if(right == null && left != null) {
+	    	  return Integer.compare(1,0);
+	      }
 
 	      int count1 = left.getLikes();
 	      int count2 = right.getLikes();
@@ -199,7 +211,9 @@ public class Run {
 			score += movie.getBiography().toLowerCase().contains("cannes") || movie.getDescription().toLowerCase().contains("cannes") ? 1 : 0;
 		}
 		score += movie.getSchedule().size();
-		score += movie.getLocations().size();
+		if(movie.getLocations() != null)
+			score += movie.getLocations().size();
+		
 		for(String time : movie.getSchedule()){
 			if(time.startsWith("Fri") || time.startsWith("Sat") || time.startsWith("Sun"))
 				score++;
