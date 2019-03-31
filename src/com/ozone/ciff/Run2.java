@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class Run2 {
@@ -37,6 +38,7 @@ public class Run2 {
 	}
 	
 	public static void main(String[] args) throws IOException {
+		Date t = new Date();
 		File file = new File(System.getProperty("user.dir"));
 		List<Movie> movies = new ArrayList<Movie>();
 		System.out.println("1. Parsing data...");
@@ -110,6 +112,7 @@ public class Run2 {
 		}
 		rows.addAll(ConvertToHtml.endHTML());
 		ConvertToHtml.writeToFile("index.html", rows);
+		System.out.println("Done. Ellapsed time: " + (new Date().getTime() - t.getTime()));
 	}
 	
 	public static Movie extractMovieFromSource(File source){
