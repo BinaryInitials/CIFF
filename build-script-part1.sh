@@ -3,7 +3,7 @@
 
 directories=`ls`
 jarName="ciff-parser.jar"
-mainClass="com.ozone.ciff.Run"
+mainClass="com.ozone.ciff.Run1"
 
 src="src"
 bin="bin"
