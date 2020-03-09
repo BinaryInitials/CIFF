@@ -41,6 +41,7 @@ public class ConvertToHtml {
 				continue;
 			
 			String stub = film.get("url").replaceAll(".*/","");
+			
 			String locations = film.get("locations");
 			String row = " <a href=\"" + film.get("url") + "\" title=\"" + film.get("title") + "\" class=\"film\" target=\"_blank\">";
 			row += "<img class=\"img-fluid\" src=\"images/" + stub + "\" alt=\"\" height=\"300\" width=\"450\">";
