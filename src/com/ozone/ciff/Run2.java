@@ -16,6 +16,7 @@ import java.util.List;
 public class Run2 {
 
 	public static final String URL_LIKE_TEMPLATE = "https://www.facebook.com/plugins/like.php?app_id=278343225630630&href=https%3A%2F%2Fwww.clevelandfilm.org%2Ffilms%2F" + Run1.YEAR + "%2F";
+	public static final String BUY_ME_COFFEE = "<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('COFFEE', '#553333', 'E1E81HLXN');kofiwidget2.draw();</script>";
 	
 	public static int getMovieLikes(String stub){
 		int likes = 0;

@@ -14,6 +14,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import com.sun.image.codec.jpeg.ImageFormatException;
+
 public class DecreaseSizeOfAnImage {
 
 	public static final int LIMIT_AREA = 524288;
@@ -50,7 +52,7 @@ public class DecreaseSizeOfAnImage {
 				int height_corrected = matrix.get(Channel.GREEN).length;
 				int width_corrected = matrix.get(Channel.GREEN)[0].length;
 				System.out.println(filename + "\t" + height_corrected + " x " + width_corrected + "\tCORRECTION");
-				ImageIO.write(convertToImage(matrix), "jpg", new File("raw-images/" + filename));
+				ImageIO.write(convertToImage(matrix), "jpg", new File(directory + "/" + filename));
 			}
 		}
 	}
@@ -89,11 +91,12 @@ public class DecreaseSizeOfAnImage {
 			BufferedImage image = com.sun.image.codec.jpeg.JPEGCodec.createJPEGDecoder(is).decodeAsBufferedImage();
 			is.close();
 			return image;
+		}catch (ImageFormatException e) {
+			System.out.println(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		} catch (com.sun.image.codec.jpeg.TruncatedFileException e) {
-			System.out.println("Ignoring " + filename);
-//			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		return null;
 	}

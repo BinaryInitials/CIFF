@@ -1,1 +1,5 @@
 /bin/
+*.txt
+*.jar
+*.html
+/images/

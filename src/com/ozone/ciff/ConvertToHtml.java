@@ -119,12 +119,6 @@ public class ConvertToHtml {
 		rows.add("	filter();");
 		rows.add("}");
 		rows.add("</script>");
-		rows.add("<script src=\"js/filter.js\"></script>");
-		rows.add("<script src=\"https://code.jquery.com/jquery-3.2.1.slim.min.js\" integrity=\"sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN\" crossorigin=\"anonymous\"></script>");
-		rows.add("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js\" integrity=\"sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q\" crossorigin=\"anonymous\"></script>");
-		rows.add("<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\" integrity=\"sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl\" crossorigin=\"anonymous\"></script>");
-		rows.add("<script src=\"https://code.jquery.com/jquery-1.11.3.min.js\"></script>");
-		rows.add("<script src=\"https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js\"></script>");
 		rows.add("</body>");
 		rows.add("</html>");
 		return rows;
@@ -142,6 +136,12 @@ public class ConvertToHtml {
 		rows.add("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"icon.ico\" />");
 		rows.add("<link type=\"text/css\" rel=\"stylesheet\" href=\"css/site.css\">");
 		rows.add("<link type=\"text/css\" rel=\"stylesheet\" href=\"http://fast.fonts.com/cssapi/cd3eef30-2267-4f91-abfd-d90805bf0fec.css\">");
+		rows.add("<script src=\"js/filter.js\"></script>");
+		rows.add("<script src=\"https://code.jquery.com/jquery-3.2.1.slim.min.js\" integrity=\"sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN\" crossorigin=\"anonymous\"></script>");
+		rows.add("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js\" integrity=\"sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q\" crossorigin=\"anonymous\"></script>");
+		rows.add("<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js\" integrity=\"sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl\" crossorigin=\"anonymous\"></script>");
+		rows.add("<script src=\"https://code.jquery.com/jquery-1.11.3.min.js\"></script>");
+		rows.add("<script src=\"https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js\"></script>");
 		rows.add("<style>");
 		rows.add("body {");
 		rows.add("  margin: 0;");
@@ -178,27 +178,32 @@ public class ConvertToHtml {
 		rows.add("</head>");
 		rows.add("<body>");
 		rows.add("<div class=\"top-container\">");
-		rows.add("<!-- <div class=\"header\" id=\"myHeader\"> -->");
-		rows.add("<body class=\"no-fix\">");
 		rows.add("<img class=\"img-fluid\" src=\"logo.png\">");
 		rows.add("</div>");
 		rows.add("");
 		rows.add("<div class=\"header\" id=\"myHeader\">");
 		rows.add("<div class=\"topnav\" id=\"search\">");
-		rows.add("<input style=\"width:320px; margin-left: 10px;\" type=\"text\" size=\"2\" placeholder=\"Search...\" onkeyup=\"filter()\" id=\"filter-search\"/>");
+		rows.add("<input style=\"width:380px; margin-left: 10px;\" type=\"text\" size=\"2\" placeholder=\"Search...\" onkeyup=\"filter()\" id=\"filter-search\"/>");
 		rows.add("</div>");
+		rows.add("<div class=\"container float-left\">");
 		rows.add("<button id=\"default\" style=\"display:none; background:#68C090;\"/>");
 		rows.add("<button id=\"checked\" style=\"display:none; background:#03B1CF;\"/>");
-		rows.add("<button id=\"forums\" style=\"font-family:arial; margin-left: 10px; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">FORUMS</button>");
-		rows.add("<button id=\"awards\" style=\"font-family:arial; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">AWARDS</button>");
-		rows.add("<button id=\"premiere\" style=\"font-family:arial; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">PREMIERE</button>");
-		rows.add("<!-- ");
-		rows.add("<button id=\"weekends\" style=\"font-family:arial; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">WEEKENDS</button>");
-		rows.add("<button id=\"evenings\" style=\"font-family:arial; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">EVENINGS</button>");
-		rows.add(" -->");
-		rows.add("");
+//		rows.add("<button id=\"forums\" style=\"font-family:arial; margin-left: 10px; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">FORUMS</button>");
+		rows.add("<button id=\"awards\" style=\"font-family:arial; background:#03B1CF; font-size: 14px; border-radius: 8px;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">AWARD</button>");
+		rows.add("<button id=\"premiere\" style=\"font-family:arial; background:#03B1CF; font-size: 14px; border-radius: 8px;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">PREMIERE</button>");
+		rows.add(Run2.BUY_ME_COFFEE);
+//		rows.add("<!-- ");
+//		rows.add("<button id=\"weekends\" style=\"font-family:arial; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">WEEKENDS</button>");
+//		rows.add("<button id=\"evenings\" style=\"font-family:arial; background:#03B1CF;\" type=\"button\" class=\"btn btn-primary\" onclick=\"checkbutton(this)\">EVENINGS</button>");
+//		rows.add(" -->");
+		rows.add("</div>");
 		rows.add("</div>");
 		rows.add("");
+		rows.add("<script>\n" + 
+				"  $('#filter-search').on('click', function(){\n" + 
+				"    $(window).off('resize');\n" + 
+				"  });\n" + 
+				"</script>");
 		rows.add("<div class=\"content\">");
 		rows.add("<div id=\"mobile-schedule-list\">");
 		return rows;
